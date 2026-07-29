@@ -8,8 +8,8 @@ from sqlalchemy import engine_from_config, pool
 from app.core.config import settings
 from app.core.database import Base
 
-# Import models here when they are created so Alembic can detect them.
-# Example: from app.models import user, vehicle  # noqa: F401
+# Import models so Alembic can detect them for autogenerate.
+from app.models import user  # noqa: F401
 
 config = context.config
 
