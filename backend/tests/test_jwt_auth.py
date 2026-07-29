@@ -7,30 +7,11 @@ from fastapi import APIRouter, Depends
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
+from app.api.deps import get_current_user, require_admin
 from app.core.database import SessionLocal
 from app.main import app
 from app.models.user import User, UserRole
 
-# Try importing dependencies that will be implemented in the GREEN phase.
-# If they don't exist yet, fallback to dummy dependencies so pytest can collect tests.
-try:
-    from app.api.deps import get_current_user, require_admin
-except ImportError:
-    from fastapi import HTTPException, status
-
-    def get_current_user():
-        """Placeholder dependency for RED phase - fails until implemented."""
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="get_current_user dependency not implemented yet",
-        )
-
-    def require_admin():
-        """Placeholder dependency for RED phase - fails until implemented."""
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="require_admin dependency not implemented yet",
-        )
 
 
 
