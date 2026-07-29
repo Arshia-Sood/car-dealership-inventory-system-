@@ -1,9 +1,13 @@
+from datetime import timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
+from app.core.security import create_access_token, verify_password
 from app.crud.user import create_user, get_user_by_email, get_user_by_username
-from app.schemas.user import UserRegister, UserResponse
+from app.schemas.user import Token, UserLogin, UserRegister, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -29,3 +33,21 @@ def register(user_in: UserRegister, db: Session = Depends(get_db)) -> UserRespon
         username=user.username,
         role=user.role.value,
     )
+
+
+@router.post("/login", response_model=Token)
+def login(user_in: UserLogin, db: Session = Depends(get_db)) -> Token:
+    user = get_user_by_email(db, user_in.email)
+    if not user or not verify_password(user_in.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+        )
+
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(user.id), "email": user.email, "role": user.role.value},
+        expires_delta=access_token_expires,
+    )
+    return Token(access_token=access_token, token_type="bearer")
+
