@@ -6,7 +6,7 @@ export default function SearchBar({ filters, onChange, onSearch, onClear }) {
 
   return (
     <form
-      className="mt-6 grid gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200 md:grid-cols-3"
+      className="card-surface grid gap-4 p-4 sm:p-6 md:grid-cols-3"
       onSubmit={onSearch}
     >
       <label className="text-sm font-medium text-slate-700">
@@ -63,14 +63,14 @@ export default function SearchBar({ filters, onChange, onSearch, onClear }) {
       <div className="flex items-end gap-3">
         <button
           type="submit"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+          className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700"
         >
           Search
         </button>
         <button
           type="button"
           onClick={onClear}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50"
         >
           Clear filters
         </button>

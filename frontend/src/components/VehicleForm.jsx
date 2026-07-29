@@ -53,16 +53,21 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, isSubmitting 
   }
 
   return (
-    <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold text-slate-900">
-          {isEditing ? 'Edit Vehicle' : 'Add Vehicle'}
-        </h2>
+    <section className="card-surface p-5 sm:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">
+            {isEditing ? 'Update' : 'Create'}
+          </p>
+          <h2 className="text-xl font-semibold text-slate-900">
+            {isEditing ? 'Edit Vehicle' : 'Add Vehicle'}
+          </h2>
+        </div>
         {isEditing && (
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm font-medium text-slate-600 hover:text-slate-900"
+            className="text-sm font-semibold text-slate-600 transition hover:text-slate-900"
           >
             Cancel edit
           </button>
@@ -70,7 +75,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, isSubmitting 
       </div>
 
       {error && (
-        <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+        <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700" role="alert">
           {error}
         </p>
       )}
@@ -131,7 +136,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, isSubmitting 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
+            className="w-full rounded-full bg-blue-600 px-4 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
           >
             {isSubmitting ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Vehicle'}
           </button>

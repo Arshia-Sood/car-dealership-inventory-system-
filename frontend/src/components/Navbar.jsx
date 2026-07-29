@@ -22,18 +22,25 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-slate-200 bg-white" aria-label="Main navigation">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <NavLink to="/" className="text-lg font-semibold text-slate-900">
-          Car Dealership
+    <nav className="border-b border-slate-200/80 bg-white/80 backdrop-blur" aria-label="Main navigation">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <NavLink to="/" className="flex items-center gap-3 text-lg font-semibold text-slate-900 transition hover:text-blue-600">
+          <span className="flex size-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">
+            CD
+          </span>
+          <span>Car Dealership</span>
         </NavLink>
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-medium text-slate-600">
+        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
           {navigationLinks.map(({ label, to }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                isActive ? 'text-blue-600' : 'transition hover:text-blue-600'
+                `rounded-full px-3 py-2 transition ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'hover:bg-slate-100 hover:text-blue-600'
+                }`
               }
             >
               {label}
@@ -43,7 +50,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleLogout}
-              className="cursor-pointer transition hover:text-blue-600"
+              className="rounded-full border border-slate-200 px-3 py-2 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
             >
               Logout
             </button>

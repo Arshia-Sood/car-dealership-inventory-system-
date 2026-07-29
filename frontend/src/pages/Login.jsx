@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import api from '../api/axios.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import { getApiErrorMessage } from '../utils/apiError.js'
 
 const initialForm = { email: '', password: '' }
@@ -14,6 +15,7 @@ export default function Login() {
   const { isAuthenticated, login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const { pushToast } = useToast()
 
   if (isAuthenticated) {
     return <Navigate to="/" replace />
@@ -37,6 +39,7 @@ export default function Login() {
     try {
       const response = await api.post('/auth/login', form)
       login(response.data.access_token)
+      pushToast('Welcome back! You are signed in.', 'success')
       navigate('/', { replace: true })
     } catch (requestError) {
       setError(getApiErrorMessage(requestError, 'Unable to sign in. Please try again.'))
@@ -46,9 +49,16 @@ export default function Login() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-md rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
-      <h1 className="text-2xl font-bold text-slate-900">Login</h1>
-      <p className="mt-2 text-sm text-slate-600">Sign in to access the dealership dashboard.</p>
+    <section className="card-surface mx-auto w-full max-w-md p-6 sm:p-8">
+      <div className="flex items-center gap-3">
+        <span className="flex size-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">
+          CD
+        </span>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Login</h1>
+          <p className="mt-1 text-sm text-slate-600">Sign in to access the dealership dashboard.</p>
+        </div>
+      </div>
 
       {location.state?.message && (
         <p className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700" role="status">
@@ -87,7 +97,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
+          className="w-full rounded-full bg-blue-600 px-4 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
         >
           {isLoading ? 'Signing in…' : 'Login'}
         </button>

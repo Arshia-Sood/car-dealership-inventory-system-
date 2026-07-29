@@ -1,8 +1,8 @@
 export default function ConfirmDialog({ title, message, confirmLabel, onConfirm, onCancel, isSubmitting }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">
       <section
-        className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl"
+        className="card-surface w-full max-w-sm p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-title"
@@ -16,7 +16,7 @@ export default function ConfirmDialog({ title, message, confirmLabel, onConfirm,
             type="button"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:cursor-not-allowed"
+            className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
@@ -24,7 +24,7 @@ export default function ConfirmDialog({ title, message, confirmLabel, onConfirm,
             type="button"
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400"
+            className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400"
           >
             {isSubmitting ? 'Deleting...' : confirmLabel}
           </button>

@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import api from '../api/axios.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import { getApiErrorMessage } from '../utils/apiError.js'
 
 const initialForm = { email: '', username: '', password: '' }
@@ -13,6 +14,7 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false)
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const { pushToast } = useToast()
 
   if (isAuthenticated) {
     return <Navigate to="/" replace />
@@ -35,6 +37,7 @@ export default function Register() {
     setIsLoading(true)
     try {
       await api.post('/auth/register', form)
+      pushToast('Account created successfully. Please sign in.', 'success')
       navigate('/login', {
         replace: true,
         state: { message: 'Registration successful. Please log in.' },
@@ -47,9 +50,16 @@ export default function Register() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-md rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
-      <h1 className="text-2xl font-bold text-slate-900">Register</h1>
-      <p className="mt-2 text-sm text-slate-600">Create an account for the dealership system.</p>
+    <section className="card-surface mx-auto w-full max-w-md p-6 sm:p-8">
+      <div className="flex items-center gap-3">
+        <span className="flex size-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white shadow-sm">
+          CD
+        </span>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Register</h1>
+          <p className="mt-1 text-sm text-slate-600">Create an account for the dealership system.</p>
+        </div>
+      </div>
 
       {error && (
         <p className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
@@ -94,7 +104,7 @@ export default function Register() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
+          className="w-full rounded-full bg-blue-600 px-4 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
         >
           {isLoading ? 'Creating account…' : 'Register'}
         </button>
