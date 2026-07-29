@@ -17,6 +17,10 @@ class VehicleUpdate(BaseModel):
     quantity_in_stock: int | None = Field(default=None, ge=0)
 
 
+class InventoryAction(BaseModel):
+    quantity: int = Field(gt=0)
+
+
 class VehicleResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

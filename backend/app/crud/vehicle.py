@@ -55,6 +55,20 @@ def update_vehicle(db: Session, vehicle: Vehicle, vehicle_in: VehicleUpdate) -> 
     return vehicle
 
 
+def purchase_vehicle(db: Session, vehicle: Vehicle, quantity: int) -> Vehicle:
+    vehicle.quantity_in_stock -= quantity
+    db.commit()
+    db.refresh(vehicle)
+    return vehicle
+
+
+def restock_vehicle(db: Session, vehicle: Vehicle, quantity: int) -> Vehicle:
+    vehicle.quantity_in_stock += quantity
+    db.commit()
+    db.refresh(vehicle)
+    return vehicle
+
+
 def delete_vehicle(db: Session, vehicle: Vehicle) -> None:
     db.delete(vehicle)
     db.commit()
