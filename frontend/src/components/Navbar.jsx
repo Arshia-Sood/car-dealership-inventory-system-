@@ -1,13 +1,22 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
-const navigationLinks = [
-  { label: 'Dashboard', to: '/' },
-  { label: 'Admin', to: '/admin' },
-  { label: 'Login', to: '/login' },
-  { label: 'Register', to: '/register' },
-]
+import { useAuth } from '../context/AuthContext.jsx'
 
 export default function Navbar() {
+  const { isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
+  const navigationLinks = isAuthenticated
+    ? [{ label: 'Dashboard', to: '/' }]
+    : [
+        { label: 'Login', to: '/login' },
+        { label: 'Register', to: '/register' },
+      ]
+
+  function handleLogout() {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <nav className="border-b border-slate-200 bg-white" aria-label="Main navigation">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -26,6 +35,15 @@ export default function Navbar() {
               {label}
             </NavLink>
           ))}
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="cursor-pointer transition hover:text-blue-600"
+            >
+              Logout
+            </button>
+          )}
         </div>
       </div>
     </nav>
