@@ -14,6 +14,23 @@ def get_all_vehicles(db: Session) -> Sequence[Vehicle]:
     return db.query(Vehicle).all()
 
 
+def search_vehicles(
+    db: Session,
+    make: str | None = None,
+    model: str | None = None,
+    category: str | None = None,
+) -> Sequence[Vehicle]:
+    query = db.query(Vehicle)
+    if make is not None:
+        query = query.filter(Vehicle.make.ilike(f"%{make}%"))
+    if model is not None:
+        query = query.filter(Vehicle.model.ilike(f"%{model}%"))
+    if category is not None:
+        query = query.filter(Vehicle.category == category)
+    return query.all()
+
+
+
 def create_vehicle(db: Session, vehicle_in: VehicleCreate) -> Vehicle:
     vehicle = Vehicle(
         make=vehicle_in.make,

@@ -10,6 +10,7 @@ from app.crud.vehicle import (
     delete_vehicle,
     get_all_vehicles,
     get_vehicle_by_id,
+    search_vehicles,
     update_vehicle,
 )
 from app.models.user import User
@@ -33,6 +34,17 @@ def list_vehicles(
     current_user: User = Depends(get_current_user),
 ) -> Sequence[VehicleResponse]:
     return get_all_vehicles(db)
+
+
+@router.get("/search", response_model=list[VehicleResponse])
+def search_vehicles_endpoint(
+    make: str | None = None,
+    model: str | None = None,
+    category: str | None = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Sequence[VehicleResponse]:
+    return search_vehicles(db, make=make, model=model, category=category)
 
 
 @router.put("/{vehicle_id}", response_model=VehicleResponse)

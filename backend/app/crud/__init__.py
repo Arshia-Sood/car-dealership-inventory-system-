@@ -4,6 +4,7 @@ from app.crud.vehicle import (
     delete_vehicle,
     get_all_vehicles,
     get_vehicle_by_id,
+    search_vehicles,
     update_vehicle,
 )
 
@@ -14,7 +15,9 @@ __all__ = [
     "create_vehicle",
     "get_all_vehicles",
     "get_vehicle_by_id",
+    "search_vehicles",
     "update_vehicle",
     "delete_vehicle",
 ]
+
 
