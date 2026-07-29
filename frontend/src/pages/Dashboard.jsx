@@ -1,37 +1,108 @@
 import { useEffect, useState } from 'react'
 
 import api from '../api/axios.js'
+import PurchaseModal from '../components/PurchaseModal.jsx'
+import SearchBar from '../components/SearchBar.jsx'
 import VehicleCard from '../components/VehicleCard.jsx'
 import { getApiErrorMessage } from '../utils/apiError.js'
 
+const emptyFilters = {
+  make: '',
+  model: '',
+  category: '',
+  minPrice: '',
+  maxPrice: '',
+}
+
+function applyPriceFilters(vehicles, filters) {
+  return vehicles.filter((vehicle) => {
+    const price = Number(vehicle.price)
+    const meetsMinimum = filters.minPrice === '' || price >= Number(filters.minPrice)
+    const meetsMaximum = filters.maxPrice === '' || price <= Number(filters.maxPrice)
+
+    return meetsMinimum && meetsMaximum
+  })
+}
+
 export default function Dashboard() {
   const [vehicles, setVehicles] = useState([])
+  const [filters, setFilters] = useState(emptyFilters)
+  const [activeFilters, setActiveFilters] = useState(emptyFilters)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedVehicle, setSelectedVehicle] = useState(null)
+
+  async function loadVehicles(searchFilters) {
+    setIsLoading(true)
+    setError('')
+
+    const params = Object.fromEntries(
+      Object.entries(searchFilters)
+        .filter(([key, value]) => ['make', 'model', 'category'].includes(key) && value.trim())
+        .map(([key, value]) => [key, value.trim()]),
+    )
+
+    try {
+      const response = await api.get('/vehicles/search', { params })
+      setVehicles(applyPriceFilters(response.data, searchFilters))
+    } catch (requestError) {
+      setError(getApiErrorMessage(requestError, 'Unable to load vehicles. Please try again.'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
-    async function loadVehicles() {
-      try {
-        const response = await api.get('/vehicles')
-        setVehicles(response.data)
-      } catch (requestError) {
-        setError(getApiErrorMessage(requestError, 'Unable to load vehicles. Please try again.'))
-      } finally {
-        setIsLoading(false)
-      }
+    loadVehicles(activeFilters)
+  }, [activeFilters])
+
+  function handleSearch(event) {
+    event.preventDefault()
+    setNotice('')
+
+    if (
+      filters.minPrice !== '' &&
+      filters.maxPrice !== '' &&
+      Number(filters.minPrice) > Number(filters.maxPrice)
+    ) {
+      setError('Minimum price cannot be greater than maximum price.')
+      return
     }
 
-    loadVehicles()
-  }, [])
+    setActiveFilters({ ...filters })
+  }
+
+  function handleClear() {
+    setFilters(emptyFilters)
+    setActiveFilters(emptyFilters)
+    setNotice('')
+  }
+
+  async function handlePurchaseSuccess() {
+    setNotice('Purchase completed successfully.')
+    await loadVehicles(activeFilters)
+  }
 
   return (
     <section>
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Vehicle Dashboard</h1>
-          <p className="mt-2 text-slate-600">Browse the current dealership inventory.</p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-slate-900">Vehicle Dashboard</h1>
+        <p className="mt-2 text-slate-600">Browse the current dealership inventory.</p>
       </div>
+
+      <SearchBar
+        filters={filters}
+        onChange={setFilters}
+        onSearch={handleSearch}
+        onClear={handleClear}
+      />
+
+      {notice && (
+        <p className="mt-6 rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700" role="status">
+          {notice}
+        </p>
+      )}
 
       {isLoading && (
         <div className="flex min-h-52 items-center justify-center" role="status">
@@ -55,9 +126,17 @@ export default function Dashboard() {
       {!isLoading && !error && vehicles.length > 0 && (
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {vehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            <VehicleCard key={vehicle.id} vehicle={vehicle} onPurchase={setSelectedVehicle} />
           ))}
         </div>
+      )}
+
+      {selectedVehicle && (
+        <PurchaseModal
+          vehicle={selectedVehicle}
+          onClose={() => setSelectedVehicle(null)}
+          onSuccess={handlePurchaseSuccess}
+        />
       )}
     </section>
   )
