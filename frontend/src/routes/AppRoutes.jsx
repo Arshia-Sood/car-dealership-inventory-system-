@@ -6,6 +6,7 @@ import Dashboard from '../pages/Dashboard.jsx'
 import Login from '../pages/Login.jsx'
 import NotFound from '../pages/NotFound.jsx'
 import Register from '../pages/Register.jsx'
+import AdminRoute from './AdminRoute.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
 export default function AppRoutes() {
@@ -16,7 +17,9 @@ export default function AppRoutes() {
         <Route path="register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route index element={<Dashboard />} />
-          <Route path="admin" element={<AdminDashboard />} />
+          <Route element={<AdminRoute />}>
+            <Route path="admin" element={<AdminDashboard />} />
+          </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>

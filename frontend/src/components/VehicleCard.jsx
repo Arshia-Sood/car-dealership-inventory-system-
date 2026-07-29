@@ -1,4 +1,4 @@
-export default function VehicleCard({ vehicle, onPurchase }) {
+export default function VehicleCard({ vehicle, onPurchase, children }) {
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -20,14 +20,17 @@ export default function VehicleCard({ vehicle, onPurchase }) {
           <dd className="mt-1 font-semibold text-slate-900">{vehicle.quantity_in_stock}</dd>
         </div>
       </dl>
-      <button
-        type="button"
-        onClick={() => onPurchase(vehicle)}
-        disabled={vehicle.quantity_in_stock === 0}
-        className="mt-5 w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-      >
-        {vehicle.quantity_in_stock === 0 ? 'Out of Stock' : 'Purchase'}
-      </button>
+      {onPurchase && (
+        <button
+          type="button"
+          onClick={() => onPurchase(vehicle)}
+          disabled={vehicle.quantity_in_stock === 0}
+          className="mt-5 w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          {vehicle.quantity_in_stock === 0 ? 'Out of Stock' : 'Purchase'}
+        </button>
+      )}
+      {children}
     </article>
   )
 }

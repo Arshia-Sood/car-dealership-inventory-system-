@@ -1,12 +1,16 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext.jsx'
+import { isAdminToken } from '../utils/auth.js'
 
 export default function Navbar() {
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, logout, token } = useAuth()
   const navigate = useNavigate()
   const navigationLinks = isAuthenticated
-    ? [{ label: 'Dashboard', to: '/' }]
+    ? [
+        { label: 'Dashboard', to: '/' },
+        ...(isAdminToken(token) ? [{ label: 'Admin', to: '/admin' }] : []),
+      ]
     : [
         { label: 'Login', to: '/login' },
         { label: 'Register', to: '/register' },
