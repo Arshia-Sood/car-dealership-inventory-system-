@@ -15,11 +15,12 @@ if str(BACKEND_ROOT) not in sys.path:
 
 @pytest.fixture(autouse=True)
 def prepare_database():
-    """Ensure tables exist and start each test with an empty users table."""
+    """Ensure tables exist and start each test with empty database tables."""
     Base.metadata.create_all(bind=engine)
 
     with SessionLocal() as session:
-        session.execute(text("TRUNCATE TABLE users RESTART IDENTITY CASCADE"))
+        session.execute(text("TRUNCATE TABLE users, vehicles RESTART IDENTITY CASCADE"))
         session.commit()
 
     yield
+
