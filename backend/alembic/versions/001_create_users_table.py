@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 revision: str = "001_create_users"
 down_revision: Union[str, None] = None
@@ -17,7 +18,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    user_role = sa.Enum("user", "admin", name="user_role")
+    user_role = postgresql.ENUM(
+        "user",
+        "admin",
+        name="user_role",
+        create_type=False,
+    )
     user_role.create(op.get_bind(), checkfirst=True)
 
     op.create_table(
@@ -40,5 +46,7 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_users_email"), table_name="users")
     op.drop_table("users")
 
-    user_role = sa.Enum("user", "admin", name="user_role")
+    user_role = postgresql.ENUM(name="user_role", create_type=False)
     user_role.drop(op.get_bind(), checkfirst=True)
+
+    

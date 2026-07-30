@@ -1,4 +1,8 @@
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+RoleName = Literal["user", "admin"]
 
 
 class UserRegister(BaseModel):
@@ -13,7 +17,7 @@ class UserResponse(BaseModel):
     id: int
     email: str
     username: str
-    role: str
+    role: RoleName
 
 
 class UserLogin(BaseModel):
